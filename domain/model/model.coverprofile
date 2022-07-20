@@ -1,0 +1,17 @@
+mode: atomic
+github.com/EusRique/frajola/domain/model/document.go:21.13,23.2 1 1
+github.com/EusRique/frajola/domain/model/document.go:34.43,37.71 2 7
+github.com/EusRique/frajola/domain/model/document.go:41.2,41.31 1 5
+github.com/EusRique/frajola/domain/model/document.go:54.2,54.16 1 2
+github.com/EusRique/frajola/domain/model/document.go:58.2,58.12 1 2
+github.com/EusRique/frajola/domain/model/document.go:37.71,39.3 1 2
+github.com/EusRique/frajola/domain/model/document.go:42.14,44.22 2 1
+github.com/EusRique/frajola/domain/model/document.go:47.13,49.21 2 4
+github.com/EusRique/frajola/domain/model/document.go:44.22,46.4 1 1
+github.com/EusRique/frajola/domain/model/document.go:49.21,51.4 1 2
+github.com/EusRique/frajola/domain/model/document.go:54.16,56.3 1 0
+github.com/EusRique/frajola/domain/model/document.go:61.99,64.16 3 2
+github.com/EusRique/frajola/domain/model/document.go:67.2,77.16 5 2
+github.com/EusRique/frajola/domain/model/document.go:81.2,81.23 1 1
+github.com/EusRique/frajola/domain/model/document.go:64.16,66.3 1 0
+github.com/EusRique/frajola/domain/model/document.go:77.16,79.3 1 1
