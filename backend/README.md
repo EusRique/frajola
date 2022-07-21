@@ -27,5 +27,7 @@ Desenvolver uma aplicação de validação de CPF/CNPJ que deve conter uma inter
 
 ## **Abaixo os links para a documentação da API**
 
-1. [Adicionar um documento](./requirements/document.md)
+1. [Adicionar um registro](./requirements/document.md)
 2. [Listar todos os registros](./requirements/load-document.md)
+2. [Atualizar um registros](./requirements/update-document.md)
+2. [Deletar um registros](./requirements/delete-document.md)
