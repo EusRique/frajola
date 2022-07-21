@@ -4,7 +4,7 @@
 
 1. ✅ Recebe uma requisição do tipo **POST** na rota **/v1/api/create-document**
 2. ✅ Valida dados obrigatórios
-3. ✅ Cria uma compra
+3. ✅ Cria um documento
 4. ✅ Retorna 201
 
 </br>
@@ -13,7 +13,7 @@
 > ## Exceções
 1.  ✅ Retorna erro **404** se a API não existir
 2.  ✅ Retorna erro **400** se **os valores** não forem fornecidos pelo cliente
-3.  ✅ Retorna erro **404** se der erro ao tentar criar a compra
+3.  ✅ Retorna erro **404** se der erro ao tentar criar o documento
 
 </br>
 </br>   
