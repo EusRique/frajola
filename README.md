@@ -1,4 +1,4 @@
-![Imersão Full Stack && Full Cycle](https://www.pngkey.com/png/full/527-5273037_dibujos-ideia-criativa-desenho-baby-looney-tunes-frajola.png)
+![Frajola - Full Stack](https://c0.klipartz.com/pngpicture/757/355/gratis-png-tasmanian-devil-looney-tunes-sylvester-bugs-bunny-tweety-animacion-thumbnail.png)
 
 ## Sobre o repositório
 Esse repositório contém todo código de uma aplicação de validação de CPF/CNPJ.
