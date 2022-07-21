@@ -1,4 +1,4 @@
-# Listar Documentos Adicionadas
+# Listar Documentos Adicionados
 
 
 > ## Caso de sucesso
