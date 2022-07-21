@@ -43,7 +43,9 @@ func (d *DocumentRepositoryDb) SearchAllDocument(c *gin.Context) ([]model.Docume
 	var documents []model.Document
 	var pagination pagination.Pagination
 
-	err := d.Db.Scopes(scopes.Paginate(c, documents, pagination, d.Db)).
+	err := d.Db.Scopes(
+		scopes.Paginate(c, documents, pagination, d.Db),
+		scopes.Filters(c)).
 		Find(&documents).Error
 
 	if err != nil {
