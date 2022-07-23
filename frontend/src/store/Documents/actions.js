@@ -23,7 +23,7 @@ export default {
         'Snackbar/setSnackbar',
         {
           status: true,
-          text: messages.showMessageError(`Erro ao carregar lista - ${error.response.data.error}`),
+          text: messages.showMessageError(`Erro ao carregar lista - ${error.message}`),
           type: 'error'
         },
         {

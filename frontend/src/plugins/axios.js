@@ -4,8 +4,8 @@ import axios from 'axios'
 import store from '@/store/index'
 
 const config = {
-  // baseURL: 'http://localhost:3000/api/v1',
-  baseURL: 'https://jsonplaceholder.typicode.com',
+  // Alterar para pegar dinamicamente
+  baseURL: 'http://localhost:3000/v1/api',
   timeout: 60 * 1000
 }
 

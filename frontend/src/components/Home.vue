@@ -96,12 +96,12 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:[`item.block`]="{ item }">
+          <template v-slot:[`item.is_block_list`]="{ item }">
             <v-chip
-              :color="getColor(item.block)"
+              :color="getColor(item.is_block_list)"
               dark
             >
-              {{ item.block }}
+              {{ item.is_block_list ? 'Não' : 'Sim' }}
             </v-chip>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
@@ -109,9 +109,6 @@
               mdi-pencil
             </v-icon>
             <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-          </template>
-          <template v-slot:no-data>
-            <v-btn color="primary" @click="listAllDocuments"> Reset </v-btn>
           </template>
         </v-data-table>
       </v-app>
@@ -139,9 +136,9 @@ export default {
           sortable: false,
           value: 'id'
         },
-        { text: 'Número Documento', value: 'userid' },
-        { text: 'Tipo de Documento', value: 'body' },
-        { text: 'Bloqueado', value: 'title' },
+        { text: 'Número Documento', value: 'document' },
+        { text: 'Tipo de Documento', value: 'document_type' },
+        { text: 'Bloqueado', value: 'is_block_list' },
         { text: 'Actions', value: 'actions', sortable: false }
       ],
       desserts: [],
@@ -167,6 +164,10 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
+
+    // isBlock () {
+    //   this.desserts === -1 ? 'New Item' : 'Edit Item'
+    // }
   },
 
   watch: {
@@ -189,12 +190,11 @@ export default {
 
     async listAllDocuments () {
       const data = await this.allDocuments()
-      console.log(data.data)
-      this.desserts = data.data
+      this.desserts = data.data.results
     },
 
     getColor (block) {
-      if (block === 'Não') return 'green'
+      if (block) return 'green'
       else return 'red'
     },
 

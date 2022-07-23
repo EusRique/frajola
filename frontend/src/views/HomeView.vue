@@ -1,18 +1,18 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/frajola.png">
-    <AllDocuments msg="Lista de Documentos"/>
+    <Home msg="Lista de Documentos"/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import AllDocuments from '@/components/AllDocuments.vue'
+import Home from '@/components/Home.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    AllDocuments
+    Home
   }
 }
 </script>
