@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -31,6 +33,7 @@ export default {
 
   data () {
     return {
+      documents: [],
       headers: [
         {
           text: 'id',
@@ -50,55 +53,55 @@ export default {
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11b',
           documentNumber: '237-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11c',
           documentNumber: '262-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11d',
           documentNumber: '305-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11e',
           documentNumber: '356-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11f',
           documentNumber: '375-000-000-11',
           documentType: 'CPF',
           block: 'Não'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11g',
           documentNumber: '392-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11h',
           documentNumber: '408-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11i',
           documentNumber: '452-000-000-11',
           documentType: 'CPF',
           block: 'Não'
         },
         {
-          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11a',
+          id: '2ec22f69-1f4a-46d4-acc8-87d8875ef11j',
           documentNumber: '518-000-000-11',
           documentType: 'CPF',
           block: 'Sim'
@@ -107,7 +110,21 @@ export default {
     }
   },
 
+  mounted () {
+    this.listAllDocuments()
+  },
+
   methods: {
+    ...mapActions('Documents', {
+      allDocuments: 'allDocuments'
+    }),
+
+    async listAllDocuments () {
+      const data = await this.allDocuments()
+      console.log('Lista carregada!!!')
+      console.log(data)
+    },
+
     getColor (block) {
       if (block === 'Não') return 'green'
       else return 'red'
