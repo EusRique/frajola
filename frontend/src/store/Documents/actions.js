@@ -5,17 +5,6 @@ export default {
   async allDocuments ({ dispatch }, payload) {
     try {
       const data = await documents.allDocuments()
-      dispatch(
-        'Snackbar/setSnackbar',
-        {
-          status: true,
-          text: messages.showMessageSuccess('Lista de documentos carregada com sucesso!!!'),
-          type: 'success'
-        },
-        {
-          root: true
-        }
-      )
 
       return data
     } catch (error) {
@@ -32,6 +21,49 @@ export default {
       )
 
       return error
+    }
+  },
+
+  async createDocument ({ dispatch }, payload) {
+    try {
+      const data = await documents.createDocument(payload)
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageSuccess('Documento criado com sucesso'),
+          type: 'success'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: data,
+        error: false
+      }
+
+      return response
+    } catch (error) {
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageError(`Erro ao criar documento - ${error.response.data.message}`),
+          type: 'error'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: error,
+        error: true
+      }
+
+      return response
     }
   }
 }

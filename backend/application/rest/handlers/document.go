@@ -34,7 +34,7 @@ func (d *DocumentRestService) CreateDocument(c *gin.Context) {
 	documentUseCase := factory.DocumentUseCaseFactory(db)
 	newDocument, err := documentUseCase.AddDocument(document.DocumentNumber, document.DocumentType, document.IsBlockList)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message:": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

@@ -15,13 +15,13 @@
               <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    color="primary"
+                    color="orange"
                     dark
                     class="mb-2"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    New Item
+                    Novo Documento
                   </v-btn>
                 </template>
                 <v-card>
@@ -32,35 +32,29 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="8" md="8">
                           <v-text-field
-                            v-model="editedItem.name"
-                            label="Dessert name"
+                            v-model="editedItem.document_number"
+                            label="Número do Documento"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.calories"
-                            label="Calories"
-                          ></v-text-field>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" sm="8" md="6">
+                          <v-select
+                            item-text="block"
+                            :items="typeDocument"
+                            v-model="editedItem.document_type"
+                            label="Tipo de Documento"
+                          ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.fat"
-                            label="Fat (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.carbs"
-                            label="Carbs (g)"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.protein"
-                            label="Protein (g)"
-                          ></v-text-field>
+                          <v-select
+                            item-text="block"
+                            :items="blocked"
+                            v-model="editedItem.is_block_list"
+                            label="Bloqueado"
+                          ></v-select>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -69,10 +63,10 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">
-                      Cancel
+                      Cancelar
                     </v-btn>
                     <v-btn color="blue darken-1" text @click="save">
-                      Save
+                      Cadastrar
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -142,32 +136,26 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false }
       ],
       desserts: [],
+      blocked: ['Não', 'Sim'],
+      typeDocument: ['CPF', 'CNPJ'],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        document_number: '',
+        document_type: '',
+        is_block_list: ''
       },
       defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        document_number: '',
+        document_type: '',
+        is_block_list: ''
       }
     }
   },
 
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Novo Documento' : 'Alterar Documento'
     }
-
-    // isBlock () {
-    //   this.desserts === -1 ? 'New Item' : 'Edit Item'
-    // }
   },
 
   watch: {
@@ -185,7 +173,8 @@ export default {
 
   methods: {
     ...mapActions('Documents', {
-      allDocuments: 'allDocuments'
+      allDocuments: 'allDocuments',
+      createDocument: 'createDocument'
     }),
 
     async listAllDocuments () {
@@ -231,11 +220,21 @@ export default {
       })
     },
 
-    save () {
+    async save () {
       if (this.editedIndex > -1) {
+        console.log('SAVE IF')
         Object.assign(this.desserts[this.editedIndex], this.editedItem)
       } else {
-        this.desserts.push(this.editedItem)
+        const newDocument = {
+          document_number: this.editedItem.document_number,
+          document_type: this.editedItem.document_type,
+          is_block_list: this.editedItem.is_block_list === 'Sim'
+        }
+        const data = await this.createDocument(newDocument)
+
+        if (data.error === false) {
+          this.desserts.push(data.data.data.results)
+        }
       }
       this.close()
     }
