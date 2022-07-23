@@ -26,7 +26,7 @@ func (d *DocumentRestService) CreateDocument(c *gin.Context) {
 	var document model.Document
 
 	if err := c.BindJSON(&document); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"message:": "JSON Invalido"})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "JSON Invalido"})
 		return
 	}
 
