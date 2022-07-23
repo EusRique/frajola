@@ -21,6 +21,7 @@ func configRoutes(api *gin.RouterGroup) {
 
 func Start(port string) {
 	r := gin.New()
+	r.Use(middleware.CORSMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
