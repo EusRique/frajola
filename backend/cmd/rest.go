@@ -32,7 +32,7 @@ var restCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(restCmd)
-	restCmd.Flags().StringP("port", "p", "8080", "REST Server port")
+	restCmd.Flags().StringP("port", "p", "3000", "REST Server port")
 
 	// Here you will define your flags and configuration settings.
 
