@@ -1,23 +1,28 @@
 # frontend
 
-## Project setup
+## Configuração do projeto
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compila e recarrega para desenvolvimento
 ```
 npm run serve
+
+localhost:8080/
 ```
 
-### Compiles and minifies for production
+### Compila e minifica para produção
 ```
 npm run build
 ```
 
-### Lints and fixes files
+### Lints e correção de arquivos
 ```
 npm run lint
 ```
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Serviços utilizados ao executar o docker-compose
+
+- VueJs versão 2.6
+- NodeJs versão 16.13.2
+- NPM versão 8.1.2

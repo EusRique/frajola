@@ -16,7 +16,19 @@ Desenvolver uma aplicação de validação de CPF/CNPJ que deve conter uma inter
 - Para rodar a aplicação rode `go run main.go rest`
 - Execute a URL de teste abaixo para rodar as migrations e verificar se a aplicação está rodando
     
-    - `curl --location --request GET 'localhost:8080/v1/api/alive'`
+    - `curl --location --request GET 'localhost:3000/v1/api/alive'`
+  
+### Como executar a interface gráfica do PgAdmin
+- Serviço disponível em `localhost:9000'`
+- Login e senha: `admin@user.com | 123456`
+
+No dashbord botão direito em **Serves** > **Register** > **Server**
+
+Dados de Conexão aba connection:
+- **Host:** `172.17.0.1` 
+- **username:** `postgres` 
+- **senha:** `root` 
+- **database:** frajola
   
 ### Serviços utilizados ao executar o docker-compose
 
