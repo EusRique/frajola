@@ -43,3 +43,16 @@ Dados de Conexão aba connection:
 2. [Listar todos os registros](./requirements/load-document.md)
 2. [Atualizar um registros](./requirements/update-document.md)
 2. [Deletar um registros](./requirements/delete-document.md)
+
+
+Checklist dos Requisitos Backend:
+---
+
+- [x] Validação do número do CPF/CNPJ (dígito verificador) na consulta e inclusão
+- [x] Filtros, ordenação e marcação em blocklist
+- [x] Interface REST para integração com o front-end
+- [ ] Rota de suporte que retorne as informações de up-time do servidor e quantidade de consultas realizadas desde o start
+- [x] PostgreSQL
+- [x] Docker
+- [x] Testes unitários;
+- [x] GO;
