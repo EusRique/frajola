@@ -65,5 +65,49 @@ export default {
 
       return response
     }
+  },
+
+  async updateDocument ({ dispatch }, payload) {
+    try {
+      console.log(payload)
+      const data = await documents.updateDocument(payload)
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageSuccess('Documento atualizado com sucesso'),
+          type: 'success'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: data,
+        error: false
+      }
+
+      return response
+    } catch (error) {
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageError(`Erro ao atualizar documento - ${error.response.data.message}`),
+          type: 'error'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: error,
+        error: true
+      }
+
+      return response
+    }
   }
 }

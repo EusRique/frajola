@@ -34,7 +34,7 @@
                       <v-row>
                         <v-col cols="12" sm="8" md="8">
                           <v-text-field
-                            v-model="editedItem.document_number"
+                            v-model="editedItem.document"
                             label="Número do Documento"
                           ></v-text-field>
                         </v-col>
@@ -42,7 +42,6 @@
                       <v-row>
                         <v-col cols="12" sm="8" md="6">
                           <v-select
-                            item-text="block"
                             :items="typeDocument"
                             v-model="editedItem.document_type"
                             label="Tipo de Documento"
@@ -50,7 +49,6 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
-                            item-text="block"
                             :items="blocked"
                             v-model="editedItem.is_block_list"
                             label="Bloqueado"
@@ -62,10 +60,10 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close">
+                    <v-btn color="orange" text @click="close">
                       Cancelar
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="save">
+                    <v-btn color="orange" text @click="save">
                       Cadastrar
                     </v-btn>
                   </v-card-actions>
@@ -95,7 +93,7 @@
               :color="getColor(item.is_block_list)"
               dark
             >
-              {{ item.is_block_list ? 'Não' : 'Sim' }}
+              {{ item.is_block_list }}
             </v-chip>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
@@ -140,12 +138,12 @@ export default {
       typeDocument: ['CPF', 'CNPJ'],
       editedIndex: -1,
       editedItem: {
-        document_number: '',
+        document: '',
         document_type: '',
         is_block_list: ''
       },
       defaultItem: {
-        document_number: '',
+        document: '',
         document_type: '',
         is_block_list: ''
       }
@@ -162,6 +160,7 @@ export default {
     dialog (val) {
       val || this.close()
     },
+
     dialogDelete (val) {
       val || this.closeDelete()
     }
@@ -174,16 +173,32 @@ export default {
   methods: {
     ...mapActions('Documents', {
       allDocuments: 'allDocuments',
-      createDocument: 'createDocument'
+      createDocument: 'createDocument',
+      updateDocument: 'updateDocument'
     }),
 
     async listAllDocuments () {
       const data = await this.allDocuments()
-      this.desserts = data.data.results
+      const newListAll = data.data.results.map(document => {
+        let isBlocked
+        if (document.is_block_list === false) isBlocked = 'Não'
+        else isBlocked = 'Sim'
+
+        const listDocuments = {
+          id: document.id,
+          document: document.document,
+          document_type: document.document_type,
+          is_block_list: isBlocked
+        }
+
+        return listDocuments
+      })
+
+      this.desserts = newListAll
     },
 
     getColor (block) {
-      if (block) return 'green'
+      if (block === 'Não') return 'green'
       else return 'red'
     },
 
@@ -221,19 +236,23 @@ export default {
     },
 
     async save () {
+      const newDocument = {
+        id: this.editedItem.id,
+        document_number: this.editedItem.document,
+        document_type: this.editedItem.document_type,
+        is_block_list: this.editedItem.is_block_list === 'Sim'
+      }
+
       if (this.editedIndex > -1) {
-        console.log('SAVE IF')
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        const newDocument = {
-          document_number: this.editedItem.document_number,
-          document_type: this.editedItem.document_type,
-          is_block_list: this.editedItem.is_block_list === 'Sim'
+        const data = await this.updateDocument(newDocument)
+        if (data.error === false) {
+          Object.assign(this.desserts[this.editedIndex], this.editedItem)
         }
+      } else {
         const data = await this.createDocument(newDocument)
 
         if (data.error === false) {
-          this.desserts.push(data.data.data.results)
+          this.listAllDocuments()
         }
       }
       this.close()
