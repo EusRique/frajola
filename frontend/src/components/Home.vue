@@ -29,34 +29,48 @@
                     <span class="text-h5">{{ formTitle }}</span>
                   </v-card-title>
 
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12" sm="8" md="8">
-                          <v-text-field
-                            v-mask="['###.###.###-##', '##.###.###/####-##']"
-                            v-model="editedItem.document"
-                            label="Número do Documento"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" sm="8" md="6">
-                          <v-select
-                            :items="typeDocument"
-                            v-model="editedItem.document_type"
-                            label="Tipo de Documento"
-                          ></v-select>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-select
-                            :items="blocked"
-                            v-model="editedItem.is_block_list"
-                            label="Bloqueado"
-                          ></v-select>
-                        </v-col>
-                      </v-row>
-                    </v-container>
+                  <v-card-text >
+                    <v-form ref="form" class="mx-2" lazy-validation>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="8" md="8">
+                            <v-text-field
+                              ref="document"
+                              v-mask="['###.###.###-##', '##.###.###/####-##']"
+                              v-model="editedItem.document"
+                              :rules="[() => !!editedItem.document || 'Campo obrigatório']"
+                              :error-messages="errorMessages"
+                              required
+                              label="Número do Documento"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="8" md="6">
+                            <v-select
+                              ref="document_type"
+                              :items="typeDocument"
+                              v-model="editedItem.document_type"
+                              :rules="[() => !!editedItem.document_type || 'Campo obrigatório']"
+                              :error-messages="errorMessages"
+                              required
+                              label="Tipo de Documento"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              ref="is_block_list"
+                              :items="blocked"
+                              v-model="editedItem.is_block_list"
+                              :rules="[() => !!editedItem.is_block_list || 'Campo obrigatório']"
+                              :error-messages="errorMessages"
+                              required
+                              label="Bloqueado"
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-form>
                   </v-card-text>
 
                   <v-card-actions>
@@ -122,6 +136,8 @@ export default {
     return {
       dialog: false,
       dialogDelete: false,
+      formHasErrors: false,
+      errorMessages: '',
       headers: [
         {
           text: 'id',
@@ -147,13 +163,24 @@ export default {
         document: '',
         document_type: '',
         is_block_list: ''
-      }
+      },
+      nameRules: [
+        v => !!v || 'Campos obrigatórios'
+      ]
     }
   },
 
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'Novo Documento' : 'Alterar Documento'
+    },
+
+    form () {
+      return {
+        document: this.editedItem.document,
+        document_type: this.editedItem.document_type,
+        is_block_list: this.editedItem.is_block_list
+      }
     }
   },
 
@@ -164,6 +191,10 @@ export default {
 
     dialogDelete (val) {
       val || this.closeDelete()
+    },
+
+    document () {
+      this.errorMessages = ''
     }
   },
 
@@ -257,7 +288,24 @@ export default {
       })
     },
 
+    resetForm () {
+      this.errorMessages = []
+      this.formHasErrors = false
+
+      Object.keys(this.form).forEach(f => {
+        this.$refs[f].reset()
+      })
+    },
+
     async save () {
+      this.formHasErrors = false
+
+      Object.keys(this.form).forEach(f => {
+        if (!this.form[f]) this.formHasErrors = true
+
+        this.$refs[f].validate(true)
+      })
+
       const newDocument = {
         id: this.editedItem.id,
         document_number: this.editedItem.document,
@@ -267,17 +315,18 @@ export default {
 
       if (this.editedIndex > -1) {
         const data = await this.updateDocument(newDocument)
-        if (data.error === false) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        }
+        if (data.error === false) Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        this.close()
+        this.resetForm()
       } else {
-        const data = await this.createDocument(newDocument)
-
-        if (data.error === false) {
-          this.listAllDocuments()
+        let data
+        if (this.formHasErrors === false) {
+          data = await this.createDocument(newDocument)
+          if (data.error === false) this.listAllDocuments()
+          this.close()
+          this.resetForm()
         }
       }
-      this.close()
     }
   }
 }
