@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Lista de Documentos</router-link> |
-      <router-link to="/about">Criar Documento</router-link>
+      <router-link to="/">Lista de Documentos</router-link>
     </nav>
     <router-view/>
   </div>
