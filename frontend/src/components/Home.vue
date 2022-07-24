@@ -187,7 +187,7 @@ export default {
 
         const listDocuments = {
           id: document.id,
-          document: document.document,
+          document: this.formatCpfOrCnpj(document),
           document_type: document.document_type,
           is_block_list: isBlocked
         }
@@ -196,6 +196,22 @@ export default {
       })
 
       this.desserts = newListAll
+    },
+
+    formatCpfOrCnpj (document) {
+      let documentFormated
+      switch (document.document_type.toUpperCase()) {
+        case 'CPF':
+          documentFormated = document.document.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+          break
+        case 'CNPJ':
+          documentFormated = document.document.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
+          break
+        default:
+          documentFormated = document.document
+      }
+
+      return documentFormated
     },
 
     getColor (block) {
