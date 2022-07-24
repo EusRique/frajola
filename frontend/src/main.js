@@ -6,6 +6,7 @@ import store from './store'
 // Plugins
 import vuetify from './plugins/vuetify'
 import toasted from './plugins/toasted'
+import mask from './plugins/mask'
 
 Vue.config.productionTip = false
 
@@ -14,5 +15,6 @@ new Vue({
   store,
   vuetify,
   toasted,
+  mask,
   render: h => h(App)
 }).$mount('#app')

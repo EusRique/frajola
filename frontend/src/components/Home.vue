@@ -34,6 +34,7 @@
                       <v-row>
                         <v-col cols="12" sm="8" md="8">
                           <v-text-field
+                            v-mask="['###.###.###-##', '##.###.###/####-##']"
                             v-model="editedItem.document"
                             label="Número do Documento"
                           ></v-text-field>
