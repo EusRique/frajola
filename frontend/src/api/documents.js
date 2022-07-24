@@ -8,8 +8,11 @@ const createDocument = async payload => await axios.post(`/create-document`, { .
 
 const updateDocument = async payload => await axios.put(`/update-document/${payload.id}`, { ...payload })
 
+const deleteDocument = async payload => await axios.delete(`/delete-document/${payload.id}`)
+
 export default {
   allDocuments,
   createDocument,
-  updateDocument
+  updateDocument,
+  deleteDocument
 }

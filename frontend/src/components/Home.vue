@@ -71,16 +71,16 @@
               </v-dialog>
               <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                  <v-card-title class="text-h5"
-                    >Are you sure you want to delete this item?</v-card-title
+                  <v-card-title class="text-h6"
+                    >Tem certeza de que deseja excluir este item?</v-card-title
                   >
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete"
-                      >Cancel</v-btn
+                    <v-btn color="orange" text @click="closeDelete"
+                      >Cancelar</v-btn
                     >
-                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                      >OK</v-btn
+                    <v-btn color="orange" text @click="deleteItemConfirm"
+                      >Excluir</v-btn
                     >
                     <v-spacer></v-spacer>
                   </v-card-actions>
@@ -174,7 +174,8 @@ export default {
     ...mapActions('Documents', {
       allDocuments: 'allDocuments',
       createDocument: 'createDocument',
-      updateDocument: 'updateDocument'
+      updateDocument: 'updateDocument',
+      deleteDocument: 'deleteDocument'
     }),
 
     async listAllDocuments () {
@@ -214,8 +215,12 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm () {
-      this.desserts.splice(this.editedIndex, 1)
+    async deleteItemConfirm () {
+      const data = await this.deleteDocument(this.editedItem)
+      console.log(data)
+      if (data.error === false) {
+        this.desserts.splice(this.editedIndex, 1)
+      }
       this.closeDelete()
     },
 

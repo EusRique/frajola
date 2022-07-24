@@ -69,7 +69,6 @@ export default {
 
   async updateDocument ({ dispatch }, payload) {
     try {
-      console.log(payload)
       const data = await documents.updateDocument(payload)
       dispatch(
         'Snackbar/setSnackbar',
@@ -95,6 +94,49 @@ export default {
         {
           status: true,
           text: messages.showMessageError(`Erro ao atualizar documento - ${error.response.data.message}`),
+          type: 'error'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: error,
+        error: true
+      }
+
+      return response
+    }
+  },
+
+  async deleteDocument ({ dispatch }, payload) {
+    try {
+      const data = await documents.deleteDocument(payload)
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageSuccess('Documento removido com sucesso'),
+          type: 'success'
+        },
+        {
+          root: true
+        }
+      )
+
+      const response = {
+        data: data,
+        error: false
+      }
+
+      return response
+    } catch (error) {
+      dispatch(
+        'Snackbar/setSnackbar',
+        {
+          status: true,
+          text: messages.showMessageError(`Erro ao remover documento - ${error.response.data.message}`),
           type: 'error'
         },
         {
