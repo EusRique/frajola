@@ -2,7 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <div id="app">
-      <v-app id="inspire">
+      <v-app id="inspire" class="table">
         <v-data-table
           :headers="headers"
           :items="desserts"
@@ -23,6 +23,74 @@
                   >
                     Novo Documento
                   </v-btn>
+                  <v-container fluid class="container">
+                    <v-row align="center">
+                      <v-col
+                        class="d-flex"
+                        cols="6"
+                        sm="2"
+                      >
+                        <v-text-field
+                          v-model="filter.document_number"
+                          :dense="true"
+                          label="Documento"
+                          outlined
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col
+                        class="d-flex"
+                        cols="6"
+                        sm="2"
+                      >
+                        <v-select
+                          v-model="filter.document_type"
+                          :dense="true"
+                          :items="typeDocument"
+                          label="Tipo de Documento"
+                          outlined
+                        ></v-select>
+                      </v-col>
+
+                      <v-col
+                        class="d-flex"
+                        cols="6"
+                        sm="2"
+                      >
+                        <v-select
+                          v-model="filter.is_block_list"
+                          :dense="true"
+                          :items="blocked"
+                          label="Bloqueado"
+                          outlined
+                        ></v-select>
+                      </v-col>
+                      <v-col
+                        class="d-flex button"
+                      >
+                        <v-btn
+                            color="orange"
+                            dark
+                            class="mb-6"
+                            @click="listAllDocuments(filter)"
+                          >
+                          Buscar
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                        class="d-flex"
+                      >
+                        <v-btn
+                            color="orange"
+                            dark
+                            class="mb-6"
+                            @click="listAllDocuments(defaultFilter)"
+                          >
+                          Limpar Filtro
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-container>
                 </template>
                 <v-card>
                   <v-card-title>
@@ -148,7 +216,7 @@ export default {
         { text: 'Número Documento', value: 'document' },
         { text: 'Tipo de Documento', value: 'document_type' },
         { text: 'Bloqueado', value: 'is_block_list' },
-        { text: 'Actions', value: 'actions', sortable: false }
+        { text: 'Ações', value: 'actions', sortable: false }
       ],
       desserts: [],
       blocked: ['Não', 'Sim'],
@@ -164,6 +232,17 @@ export default {
         document_type: '',
         is_block_list: ''
       },
+      filter: {
+        document_type: '',
+        document_number: '',
+        is_block_list: ''
+      },
+      defaultFilter: {
+        document_type: '',
+        document_number: '',
+        is_block_list: ''
+      },
+
       nameRules: [
         v => !!v || 'Campos obrigatórios'
       ]
@@ -199,7 +278,7 @@ export default {
   },
 
   created () {
-    this.listAllDocuments()
+    this.listAllDocuments(this.defaultFilter)
   },
 
   methods: {
@@ -210,8 +289,8 @@ export default {
       deleteDocument: 'deleteDocument'
     }),
 
-    async listAllDocuments () {
-      const data = await this.allDocuments()
+    async listAllDocuments (item) {
+      const data = await this.allDocuments(item)
       const newListAll = data.data.results.map(document => {
         let isBlocked
         if (document.is_block_list === false) isBlocked = 'Não'
@@ -347,5 +426,17 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.container {
+  margin-top: 24px
+}
+
+.table {
+  margin-top: 10px
+}
+
+.button {
+  flex-grow: 0;
 }
 </style>

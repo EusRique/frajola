@@ -4,7 +4,7 @@ import messages from '@/plugins/messages.js'
 export default {
   async allDocuments ({ dispatch }, payload) {
     try {
-      const data = await documents.allDocuments()
+      const data = await documents.allDocuments(payload)
 
       return data
     } catch (error) {

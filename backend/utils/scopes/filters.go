@@ -1,6 +1,7 @@
 package scopes
 
 import (
+	"regexp"
 	"strconv"
 
 	"github.com/EusRique/frajola/domain/model"
@@ -14,7 +15,10 @@ func Filters(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 
 		documentNumber := c.Query("document_number")
 		if documentNumber != "" {
-			filter.Document = documentNumber
+			cnpjOrCpf := documentNumber
+			regex, _ := regexp.Compile("[^a-zA-Z0-9]+")
+			cnpjOrCpfFormated := regex.ReplaceAllString(cnpjOrCpf, "")
+			filter.Document = cnpjOrCpfFormated
 		}
 
 		documentType := c.Query("document_type")
