@@ -8,6 +8,7 @@
           :items="desserts"
           sort-by="calories"
           class="elevation-1"
+          :footer-props="{itemsPerPageText: 'Registros por página'}"
         >
           <template v-slot:top>
             <v-toolbar flat>
@@ -24,72 +25,78 @@
                     Novo Documento
                   </v-btn>
                   <v-container fluid class="container">
-                    <v-row align="center">
-                      <v-col
-                        class="d-flex"
-                        cols="6"
-                        sm="2"
-                      >
-                        <v-text-field
-                          v-model="filter.document_number"
-                          :dense="true"
-                          label="Documento"
-                          outlined
-                        ></v-text-field>
-                      </v-col>
+                    <v-form ref="formFilter" class="mx-2" lazy-validation>
+                      <v-row align="center">
+                        <v-col
+                          class="d-flex"
+                          cols="6"
+                          sm="2"
+                        >
+                          <v-text-field
+                            ref="document_number"
+                            v-mask="['###.###.###-##', '##.###.###/####-##']"
+                            v-model="filter.document_number"
+                            :dense="true"
+                            label="Documento"
+                            outlined
+                          ></v-text-field>
+                        </v-col>
 
-                      <v-col
-                        class="d-flex"
-                        cols="6"
-                        sm="2"
-                      >
-                        <v-select
-                          v-model="filter.document_type"
-                          :dense="true"
-                          :items="typeDocument"
-                          label="Tipo de Documento"
-                          outlined
-                        ></v-select>
-                      </v-col>
+                        <v-col
+                          class="d-flex"
+                          cols="6"
+                          sm="2"
+                        >
+                          <v-select
+                            ref="type"
+                            v-model="filter.document_type"
+                            :dense="true"
+                            :items="typeDocument"
+                            label="Tipo de Documento"
+                            outlined
+                          ></v-select>
+                        </v-col>
 
-                      <v-col
-                        class="d-flex"
-                        cols="6"
-                        sm="2"
-                      >
-                        <v-select
-                          v-model="filter.is_block_list"
-                          :dense="true"
-                          :items="blocked"
-                          label="Bloqueado"
-                          outlined
-                        ></v-select>
-                      </v-col>
-                      <v-col
-                        class="d-flex button"
-                      >
-                        <v-btn
-                            color="orange"
-                            dark
-                            class="mb-6"
-                            @click="listAllDocuments(filter)"
-                          >
-                          Buscar
-                        </v-btn>
-                      </v-col>
-                      <v-col
-                        class="d-flex"
-                      >
-                        <v-btn
-                            color="orange"
-                            dark
-                            class="mb-6"
-                            @click="listAllDocuments(defaultFilter)"
-                          >
-                          Limpar Filtro
-                        </v-btn>
-                      </v-col>
-                    </v-row>
+                        <v-col
+                          class="d-flex"
+                          cols="6"
+                          sm="2"
+                        >
+                          <v-select
+                            ref="block"
+                            v-model="filter.is_block_list"
+                            :dense="true"
+                            :items="blocked"
+                            label="Bloqueado"
+                            outlined
+                          ></v-select>
+                        </v-col>
+                        <v-col
+                          class="d-flex button"
+                        >
+                          <v-btn
+                              color="orange"
+                              dark
+                              class="mb-6"
+                              @click="listAllDocuments(filter)"
+                            >
+                            Buscar
+                          </v-btn>
+                        </v-col>
+                        <v-col
+                          class="d-flex"
+                        >
+                          <v-btn
+                              color="orange"
+                              dark
+                              class="mb-6"
+                              @click="resetFilter"
+                            >
+                            Limpar Filtro
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-container>
                 </template>
                 <v-card>
@@ -260,6 +267,14 @@ export default {
         document_type: this.editedItem.document_type,
         is_block_list: this.editedItem.is_block_list
       }
+    },
+
+    formFilter () {
+      return {
+        document_number: this.filter.document_number,
+        type: this.filter.document_type,
+        block: this.filter.is_block_list
+      }
     }
   },
 
@@ -290,6 +305,7 @@ export default {
     }),
 
     async listAllDocuments (item) {
+      console.log(item)
       const data = await this.allDocuments(item)
       const newListAll = data.data.results.map(document => {
         let isBlocked
@@ -307,6 +323,38 @@ export default {
       })
 
       this.desserts = newListAll
+    },
+
+    async save () {
+      this.formHasErrors = false
+
+      Object.keys(this.form).forEach(f => {
+        if (!this.form[f]) this.formHasErrors = true
+
+        this.$refs[f].validate(true)
+      })
+
+      const newDocument = {
+        id: this.editedItem.id,
+        document_number: this.editedItem.document,
+        document_type: this.editedItem.document_type,
+        is_block_list: this.editedItem.is_block_list === 'Sim'
+      }
+
+      if (this.editedIndex > -1) {
+        const data = await this.updateDocument(newDocument)
+        if (data.error === false) Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        this.close()
+        this.resetForm()
+      } else {
+        let data
+        if (this.formHasErrors === false) {
+          data = await this.createDocument(newDocument)
+          if (data.error === false) this.listAllDocuments()
+          this.close()
+          this.resetForm()
+        }
+      }
     },
 
     formatCpfOrCnpj (document) {
@@ -376,36 +424,12 @@ export default {
       })
     },
 
-    async save () {
-      this.formHasErrors = false
-
-      Object.keys(this.form).forEach(f => {
-        if (!this.form[f]) this.formHasErrors = true
-
-        this.$refs[f].validate(true)
+    resetFilter () {
+      Object.keys(this.formFilter).forEach(f => {
+        this.$refs[f].reset()
       })
 
-      const newDocument = {
-        id: this.editedItem.id,
-        document_number: this.editedItem.document,
-        document_type: this.editedItem.document_type,
-        is_block_list: this.editedItem.is_block_list === 'Sim'
-      }
-
-      if (this.editedIndex > -1) {
-        const data = await this.updateDocument(newDocument)
-        if (data.error === false) Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        this.close()
-        this.resetForm()
-      } else {
-        let data
-        if (this.formHasErrors === false) {
-          data = await this.createDocument(newDocument)
-          if (data.error === false) this.listAllDocuments()
-          this.close()
-          this.resetForm()
-        }
-      }
+      this.listAllDocuments(this.defaultFilter)
     }
   }
 }

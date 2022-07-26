@@ -14,7 +14,7 @@ func Filters(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		var filter model.Document
 
 		documentNumber := c.Query("document_number")
-		if documentNumber != "" {
+		if documentNumber != "" && documentNumber != "null" {
 			cnpjOrCpf := documentNumber
 			regex, _ := regexp.Compile("[^a-zA-Z0-9]+")
 			cnpjOrCpfFormated := regex.ReplaceAllString(cnpjOrCpf, "")
@@ -22,13 +22,13 @@ func Filters(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		}
 
 		documentType := c.Query("document_type")
-		if documentType != "" {
+		if documentType != "" && documentType != "null" {
 			filter.DocumentType = documentType
 		}
 
 		isBlockList := c.Query("is_block_list")
 		isBlockListBool, _ := strconv.ParseBool(isBlockList)
-		if isBlockList != "" {
+		if isBlockList != "" && isBlockList != "null" {
 			filter.IsBlockList = isBlockListBool
 		}
 
