@@ -344,7 +344,6 @@ export default {
 
     async deleteItemConfirm () {
       const data = await this.deleteDocument(this.editedItem)
-      console.log(data)
       if (data.error === false) {
         this.desserts.splice(this.editedIndex, 1)
       }
@@ -357,6 +356,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.resetForm()
     },
 
     closeDelete () {
