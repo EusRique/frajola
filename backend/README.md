@@ -18,6 +18,12 @@ Desenvolver uma aplicação de validação de CPF/CNPJ que deve conter uma inter
     
     - `curl --location --request GET 'localhost:3000/v1/api/alive'`
   
+### Como rodar os teste unitários
+- Dentro da pasta backend: `ginkgo cover cmd domain/model/`
+- Dentro da pasta backend: `ginkgo --cover cmd domain/model/`
+    
+    - `curl --location --request GET 'localhost:3000/v1/api/alive'`
+  
 ### Como executar a interface gráfica do PgAdmin
 - Serviço disponível em `localhost:9000'`
 - Login e senha: `admin@user.com | 123456`
