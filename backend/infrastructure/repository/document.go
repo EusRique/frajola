@@ -2,8 +2,9 @@ package repository
 
 import (
 	"errors"
+	"math"
 
-	pagination "github.com/EusRique/frajola/application/model"
+	modelApplication "github.com/EusRique/frajola/application/model"
 	"github.com/EusRique/frajola/domain/model"
 	"github.com/EusRique/frajola/utils/scopes"
 	"github.com/gin-gonic/gin"
@@ -41,13 +42,23 @@ func (d *DocumentRepositoryDb) FindDocumentByNumber(documentNumber string) (*mod
 
 func (d *DocumentRepositoryDb) SearchAllDocument(c *gin.Context) ([]model.Document, error) {
 	var documents []model.Document
-	var pagination pagination.Pagination
+	var pagination modelApplication.Pagination
+	var totalRows int64
 
 	err := d.Db.Scopes(
 		scopes.Paginate(c, documents, pagination, d.Db),
 		scopes.Filters(c)).
 		Find(&documents).Error
 
+	pagination = c.MustGet("pagination").(modelApplication.Pagination)
+	d.Db.Scopes(
+		scopes.Filters(c)).
+		Model(&model.Document{}).Count(&totalRows)
+
+	pagination.TotalRows = totalRows
+	pagination.TotalPages = int(math.Ceil(float64(totalRows) / float64(pagination.Limit)))
+
+	c.Set("pagination", pagination)
 	if err != nil {
 		return nil, err
 	}
