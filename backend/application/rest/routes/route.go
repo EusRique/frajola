@@ -17,6 +17,7 @@ func configRoutes(api *gin.RouterGroup) {
 	api.GET("/list-documents", document.ListAllDocuments)
 	api.DELETE("/delete-document/:document_id", document.DeleteDocument)
 	api.PUT("/update-document/:document_id", document.UpdateDocument)
+	api.GET("export-csv", document.ExportDocument)
 }
 
 func Start(port string) {

@@ -2,10 +2,14 @@ package rest
 
 import (
 	"net/http"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/EusRique/frajola/application/factory"
 	"github.com/EusRique/frajola/application/model"
 	"github.com/EusRique/frajola/application/usecase"
+	"github.com/EusRique/frajola/utils/csv"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -95,4 +99,50 @@ func (d *DocumentRestService) UpdateDocument(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"results": newDocument})
+}
+
+func (d *DocumentRestService) ExportDocument(c *gin.Context) {
+	db := c.MustGet("DB").(*gorm.DB)
+	var documents [][]string
+	documentUseCase := factory.DocumentUseCaseFactory(db)
+	response, err := documentUseCase.SearchAllDocument(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	header := []string{
+		"id",
+		"numero_documento",
+		"tipo_documento",
+		"bloqueado",
+	}
+
+	documents = append(documents, header)
+
+	for _, document := range response {
+		body := []string{
+			document.ID,
+			document.Document,
+			document.DocumentType,
+			strconv.FormatBool(document.IsBlockList),
+		}
+
+		documents = append(documents, body)
+	}
+
+	nameFile := "tmp/" + time.Now().Format("20060102150405") + ".csv"
+	err = csv.ExporToCSV(c, documents, nameFile)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	err = csv.DownloadFile(c, nameFile)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	os.Remove(nameFile)
 }
